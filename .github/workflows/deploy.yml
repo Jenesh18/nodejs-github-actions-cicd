@@ -37,7 +37,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ~/nodejs-app
+            cd /var/nodejs-app/nodejs-github-actions-cicd
             git pull origin main
             npm install
             pm2 restart all || pm2 start index.js --name node-app
