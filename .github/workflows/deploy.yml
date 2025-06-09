@@ -7,28 +7,11 @@ on:
 
 jobs:
   deploy:
-    name: Deploy on EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
-
-      - name: 🧾 Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: 📦 Install dependencies
-        run: npm install
-
-      - name: 🛠️ Build project (optional)
-        run: |
-          if [ -f package.json ] && grep -q '"build"' package.json; then
-            npm run build
-          else
-            echo "No build script found"
-          fi
 
       - name: 🚀 Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -37,7 +20,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo "✅ Connected to EC2"
             cd /var/nodejs-app/nodejs-github-actions-cicd
             git pull origin main
             npm install
             pm2 restart all || pm2 start index.js --name node-app
+            echo "🚀 Deployment complete!"
